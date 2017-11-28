@@ -14,7 +14,7 @@ import java.util.TimerTask;
 public class Timer {
 
     private int segundos;
-    private java.util.Timer timer;
+    private java.util.Timer backingTimer;
 
     public Timer() {
         this.segundos = 0;
@@ -25,8 +25,8 @@ public class Timer {
     }
 
     public void start() {
-        timer = new java.util.Timer();
-        timer.schedule(new TimerTask() {
+        backingTimer = new java.util.Timer();
+        backingTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 segundos++;
@@ -35,6 +35,6 @@ public class Timer {
     }
 
     public void pause() {
-        timer.cancel();
+        backingTimer.cancel();
     }
 }

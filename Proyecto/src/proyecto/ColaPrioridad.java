@@ -5,6 +5,7 @@
  */
 package proyecto;
 
+import util.Tuple;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Queue;
  */
 public class ColaPrioridad<T> {
 
-    private static StringBuilder buffer;
+    private StringBuilder buffer;
     private List<PriorityQueue<T>> colas;
 
     public ColaPrioridad(int nColas) {
@@ -91,7 +92,7 @@ public class ColaPrioridad<T> {
                 return colas.get(i);
             }
         }
-        return null;
+        return new PriorityQueue<>();
     }
 
     @Override

@@ -37,6 +37,9 @@ public class Logger {
                 break;
             case WARNING:
                 messageLabel.setTextFill(Color.ORANGE);
+                break;
+            default:
+                break;
         }
         loggerContainer.getChildren().add(messageLabel);
     }
@@ -56,6 +59,32 @@ public class Logger {
             this.message = message;
             createDate = new Date();
         }
+
+        public Severity getSeverity() {
+            return severity;
+        }
+
+        public void setSeverity(Severity severity) {
+            this.severity = severity;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public Date getCreateDate() {
+            return createDate;
+        }
+
+        public void setCreateDate(Date createDate) {
+            this.createDate = createDate;
+        }
+        
+        
 
     }
 

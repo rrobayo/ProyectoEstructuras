@@ -7,14 +7,9 @@ package proyecto;
 
 import java.util.Comparator;
 import java.util.Objects;
-import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -23,7 +18,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
@@ -43,7 +37,7 @@ public final class Avion {
     private Pane node;
 
     public static final int GRAPH_SIZE = 80;
-    public static final String[] COLORES = {"greenyellow", "yellow", "orange"};
+    private static final String[] COLORES = {"greenyellow", "yellow", "orange"};
 
     public Avion(String codigo, float distancia, int tiempoInicio) {
         this(codigo, null, null, distancia, tiempoInicio);
@@ -75,8 +69,8 @@ public final class Avion {
         }
         sp.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         sp.setPrefSize(GRAPH_SIZE, GRAPH_SIZE);
-        
-        sp.setOnMouseClicked(event -> clicGrafico(event));
+
+        sp.setOnMouseClicked(this::clicGrafico);
         node = sp;
     }
 
@@ -201,6 +195,10 @@ public final class Avion {
                 label.setFont(Font.font(null, FontWeight.BOLD, 15));
             }
         }
+    }
+
+    public static String colorForPrioridad(int prioridad) {
+        return COLORES[prioridad];
     }
 
     public static class AvionComparadorPorTiempoEspera implements Comparator<Avion> {

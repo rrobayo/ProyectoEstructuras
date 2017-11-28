@@ -5,11 +5,8 @@
  */
 package proyecto;
 
-import exceptions.NotImplementedException;
-import java.io.File;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -20,8 +17,6 @@ import javafx.stage.Stage;
  * @author Richard
  */
 public class Proyecto extends Application {
-
-    public static int tiempo;
 
     @Override
     public void start(Stage stage) throws Exception {

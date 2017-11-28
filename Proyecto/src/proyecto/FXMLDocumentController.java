@@ -5,12 +5,12 @@
  */
 package proyecto;
 
+import util.Tuple;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -80,15 +80,11 @@ public class FXMLDocumentController implements Initializable {
         btnIniciar.setDisable(true);
         btnPausar.setDisable(false);
         timerIn = new Timeline(new KeyFrame(Duration.seconds(speedIn.getValue()),
-                x -> {
-                    ingresarAvion();
-                })
+                x -> ingresarAvion())
         );
         timerIn.setCycleCount(Timeline.INDEFINITE);
         timerOut = new Timeline(new KeyFrame(Duration.seconds(speedOut.getValue()),
-                x -> {
-                    sacarAvion();
-                })
+                x -> sacarAvion())
         );
         timerOut.setCycleCount(Timeline.INDEFINITE);
         logger.addEntry("Simulación iniciada");
@@ -148,7 +144,7 @@ public class FXMLDocumentController implements Initializable {
                 Avion atrasado = avionesEnPista.cola(i).poll();
                 logger.addEntry(String.format("%s está atrasado y se mueve a pista %d", atrasado.getCodigo(), i - 1));
                 atrasado.setTiempoInicio(timer.getSegundos());
-                atrasado.setColor(Avion.COLORES[i - 1]);
+                atrasado.setColor(Avion.colorForPrioridad(i - 1));
                 avionesEnPista.offer(atrasado, i - 1);
             }
         }

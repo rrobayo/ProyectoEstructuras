@@ -1,0 +1,5 @@
+projectKey=ruizj2016
+serverUrl=http://localhost:9000
+dashboardUrl=http://localhost:9000/dashboard/index/ruizj2016
+ceTaskId=AWAE8zowsw83q0iIAsGh
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AWAE8zowsw83q0iIAsGh
