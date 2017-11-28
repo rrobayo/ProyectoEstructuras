@@ -9,6 +9,7 @@ import exceptions.NotImplementedException;
 import java.io.File;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -24,12 +25,15 @@ public class Proyecto extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLDocument.fxml"));
+        Parent root = loader.load();
+        FXMLDocumentController controller = loader.getController();
 
         Scene scene = new Scene(root);
 
         stage.setResizable(false);
         stage.setScene(scene);
+        stage.setOnHidden(event -> controller.shutdown());
         stage.show();
     }
 
@@ -40,7 +44,4 @@ public class Proyecto extends Application {
         launch(args);
     }
 
-    public static void cargarArchivo(File archivo) {
-        throw new NotImplementedException();
-    }
 }

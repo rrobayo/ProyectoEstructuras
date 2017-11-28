@@ -33,4 +33,8 @@ public class Timer {
             }
         }, 0, 1000);
     }
+
+    public void pause() {
+        timer.cancel();
+    }
 }

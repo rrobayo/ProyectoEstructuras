@@ -7,12 +7,32 @@ package proyecto;
 
 import java.util.Comparator;
 import java.util.Objects;
+import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 
 /**
  *
  * @author Reyes Ruiz
  */
-public class Avion {
+public final class Avion {
 
     private String codigo;
     private String partida;
@@ -20,6 +40,10 @@ public class Avion {
     private float distancia;
     private int tiempoInicio;
     private boolean puedeDespegar = true;
+    private Pane node;
+
+    public static final int GRAPH_SIZE = 80;
+    public static final String[] COLORES = {"greenyellow", "yellow", "orange"};
 
     public Avion(String codigo, float distancia, int tiempoInicio) {
         this(codigo, null, null, distancia, tiempoInicio);
@@ -31,6 +55,29 @@ public class Avion {
         this.destino = destino;
         this.distancia = distancia;
         this.tiempoInicio = tiempoInicio;
+
+        Label l = new Label(codigo);
+        l.setFont(new Font(15));
+        l.setTextAlignment(TextAlignment.CENTER);
+        StackPane sp = new StackPane(l);
+        switch (getPrioridad()) {
+            case 0:
+                sp.setStyle("-fx-background-color: greenyellow");
+                break;
+            case 1:
+                sp.setStyle("-fx-background-color: yellow");
+                break;
+            case 2:
+                sp.setStyle("-fx-background-color: orange");
+                break;
+            default:
+                break;
+        }
+        sp.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        sp.setPrefSize(GRAPH_SIZE, GRAPH_SIZE);
+        
+        sp.setOnMouseClicked(event -> clicGrafico(event));
+        node = sp;
     }
 
     public static Avion parseAvion(String linea, int tiempoInicio) {
@@ -86,6 +133,10 @@ public class Avion {
         this.puedeDespegar = puedeDespegar;
     }
 
+    public Node getNodo() {
+        return node;
+    }
+
     public int getPrioridad() {
         if (distancia < 500) {
             return 0;
@@ -94,6 +145,10 @@ public class Avion {
         } else {
             return 2;
         }
+    }
+
+    public void setColor(String color) {
+        ((StackPane) node).setStyle("-fx-background-color: " + color);
     }
 
     @Override
@@ -129,6 +184,23 @@ public class Avion {
             return false;
         }
         return true;
+    }
+
+    private void clicGrafico(MouseEvent e) {
+        puedeDespegar = !puedeDespegar;
+        Node possibleLabel = node.getChildren().get(0);
+        if (possibleLabel instanceof Label) {
+            Label label = (Label) possibleLabel;
+            if (puedeDespegar) {
+                label.setTextFill(Color.BLACK);
+                label.setText(codigo);
+                label.setFont(Font.font(null, FontWeight.NORMAL, 15));
+            } else {
+                label.setTextFill(Color.RED);
+                label.setText(codigo + "\n!");
+                label.setFont(Font.font(null, FontWeight.BOLD, 15));
+            }
+        }
     }
 
     public static class AvionComparadorPorTiempoEspera implements Comparator<Avion> {

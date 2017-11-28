@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
@@ -19,16 +20,14 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import util.Logger;
+import util.Timer;
 
 /**
  *
@@ -39,9 +38,9 @@ public class FXMLDocumentController implements Initializable {
     private Timeline timerIn;
     private Timeline timerOut;
     private Queue<Avion> avionesPorEntrar = new LinkedList<>();
-    private ColaPrioridad<Avion> avionesEnPista = new ColaPrioridad<>(3,
-            Collections.reverseOrder(new Avion.AvionComparadorPorTiempoEspera()));
+    private ColaPrioridad<Avion> avionesEnPista = new ColaPrioridad<>(3, new Avion.AvionComparadorPorTiempoEspera());
     private Logger logger;
+    private Timer timer;
 
     @FXML
     private Slider speedIn;
@@ -58,6 +57,12 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void cargarArchivo(ActionEvent event) {
+        if (timerIn != null) {
+            timerIn.pause();
+        }
+        if (timerOut != null) {
+            timerOut.pause();
+        }
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Cargar archivo");
         chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
@@ -76,39 +81,31 @@ public class FXMLDocumentController implements Initializable {
         btnPausar.setDisable(false);
         timerIn = new Timeline(new KeyFrame(Duration.seconds(speedIn.getValue()),
                 x -> {
-                    if (!avionesPorEntrar.isEmpty()) {
-                        Avion nuevo = avionesPorEntrar.poll();
-                        avionesEnPista.offer(nuevo, nuevo.getPrioridad());
-                        logger.addEntry(String.format("Entra %s a pista %d. Falta(n) %d por entrar",
-                                nuevo.getCodigo(), nuevo.getPrioridad(), avionesPorEntrar.size()));
-                        dibujarPista();
-                    }
+                    ingresarAvion();
                 })
         );
         timerIn.setCycleCount(Timeline.INDEFINITE);
         timerOut = new Timeline(new KeyFrame(Duration.seconds(speedOut.getValue()),
                 x -> {
-                    if (!avionesEnPista.isEmpty()) {
-                        Tuple<Avion, Integer> sale = avionesEnPista.poll();
-                        logger.addEntry(String.format("Sale %s de pista %d. Falta(n) %d por salir",
-                                sale.getFirst().getCodigo(), sale.getSecond(), avionesEnPista.size()));
-                        dibujarPista();
-
-                    }
+                    sacarAvion();
                 })
         );
         timerOut.setCycleCount(Timeline.INDEFINITE);
         logger.addEntry("Simulación iniciada");
         timerIn.play();
         timerOut.play();
+        timer.start();
     }
 
     @FXML
     private void pausarSimulacion(ActionEvent event) {
+        timer.pause();
         timerIn.pause();
         timerOut.pause();
         speedIn.setDisable(false);
         speedOut.setDisable(false);
+        btnPausar.setDisable(true);
+        btnIniciar.setDisable(false);
         logger.addEntry("Simulación pausada");
     }
 
@@ -122,18 +119,77 @@ public class FXMLDocumentController implements Initializable {
             btnIniciar.setDisable(false);
             logger.addEntry("Se carga el archivo " + file.getName());
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
-            alert.show();
+            logger.addEntry(e.getMessage(), Logger.Severity.ERROR);
         }
     }
 
     private void dibujarPista() {
+        int pos = 0;
+        gfxContainer.getChildren().clear();
+        for (int i = 0; i < avionesEnPista.prioridades(); i++) {
+            for (Avion avion : avionesEnPista.cola(i)) {
+                gfxContainer.getChildren().add(avion.getNodo());
+                avion.getNodo().relocate(pos * Avion.GRAPH_SIZE, 0);
+                pos++;
+            }
+        }
+    }
 
+    private void ingresarAvion() {
+        if (!avionesPorEntrar.isEmpty()) {
+            Avion nuevo = avionesPorEntrar.poll();
+            nuevo.setTiempoInicio(timer.getSegundos());
+            avionesEnPista.offer(nuevo, nuevo.getPrioridad());
+            logger.addEntry(String.format("Entra %s a pista %d. Falta(n) %d por entrar",
+                    nuevo.getCodigo(), nuevo.getPrioridad(), avionesPorEntrar.size()));
+        }
+        for (int i = 1; i <= 2; i++) {
+            while (!avionesEnPista.cola(i).isEmpty() && (timer.getSegundos() - avionesEnPista.cola(i).peek().getTiempoInicio()) > 5) {
+                Avion atrasado = avionesEnPista.cola(i).poll();
+                logger.addEntry(String.format("%s está atrasado y se mueve a pista %d", atrasado.getCodigo(), i - 1));
+                atrasado.setTiempoInicio(timer.getSegundos());
+                atrasado.setColor(Avion.COLORES[i - 1]);
+                avionesEnPista.offer(atrasado, i - 1);
+            }
+        }
+        dibujarPista();
+    }
+
+    private void sacarAvion() {
+        if (!avionesEnPista.isEmpty()) {
+            PriorityQueue<Avion> primeraColaNoVacia = avionesEnPista.primeraColaNoVacia();
+            for (int i = 0; i < primeraColaNoVacia.size(); i++) {
+                Tuple<Avion, Integer> sale = avionesEnPista.poll();
+                if (sale.getFirst().puedeDespegar()) {
+                    logger.addEntry(String.format("Sale %s de pista %d. Falta(n) %d por salir",
+                            sale.getFirst().getCodigo(), sale.getSecond(), avionesEnPista.size()));
+                    break;
+                } else {
+                    logger.addEntry(String.format("%s no puede despegar de pista %d", sale.getFirst().getCodigo(), sale.getSecond()));
+                    sale.getFirst().setTiempoInicio(timer.getSegundos());
+                    avionesEnPista.offer(sale.getFirst(), sale.getSecond());
+                }
+            }
+            dibujarPista();
+        }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         logger = new Logger(loggerContainer);
+        timer = new Timer();
+    }
+
+    public void shutdown() {
+        if (timer != null) {
+            timer.pause();
+        }
+        if (timerIn != null) {
+            timerIn.stop();
+        }
+        if (timerOut != null) {
+            timerOut.stop();
+        }
     }
 
 }

@@ -69,6 +69,10 @@ public class ColaPrioridad<T> {
         return total;
     }
 
+    public int prioridades() {
+        return colas.size();
+    }
+
     public boolean isEmpty() {
         return size() == 0;
     }
@@ -79,6 +83,15 @@ public class ColaPrioridad<T> {
 
     public PriorityQueue<T> cola(int prioridad) {
         return colas.get(prioridad);
+    }
+
+    public PriorityQueue<T> primeraColaNoVacia() {
+        for (int i = 0; i < colas.size(); i++) {
+            if (!colas.get(i).isEmpty()) {
+                return colas.get(i);
+            }
+        }
+        return null;
     }
 
     @Override
