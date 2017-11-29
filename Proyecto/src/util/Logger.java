@@ -13,21 +13,41 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 /**
+ * Representa un objeto que recibe y almacena logs y los muestra en una interfaz
+ * gráfica.
  *
  * @author Reyes Ruiz
  */
 public class Logger {
 
+    /**
+     * Las severidades de los mensajes. En orden creciente de importancia, son
+     * INFO, WARNING y ERROR.
+     */
     public enum Severity {
         INFO, WARNING, ERROR
     }
     private List<Entry> entries = new LinkedList<>();
     private VBox loggerContainer;
 
+    /**
+     * Crea un nuevo Logger que mostrará los mensajes en el VBox provisto.
+     *
+     * @param loggerContainer El VBox en el cual se mostrarán los mensajes que
+     * se registren en el Logger. Un VBox debería ser usado por un único Logger
+     * a la vez.
+     */
     public Logger(VBox loggerContainer) {
         this.loggerContainer = loggerContainer;
     }
 
+    /**
+     * Crear una nueva entrada en el Logger, con el mensaje y la severidad
+     * especificados.
+     *
+     * @param message El cuerpo del mensaje
+     * @param severity La severidad del evento
+     */
     public void addEntry(String message, Severity severity) {
         entries.add(new Entry(severity, message));
         Label messageLabel = new Label(message);
@@ -44,6 +64,12 @@ public class Logger {
         loggerContainer.getChildren().add(messageLabel);
     }
 
+    /**
+     * Crear una nueva entrada en el Logger, con el mensaje especificado y una
+     * severidad por defecto de INFO
+     *
+     * @param message El cuerpo del mensaje
+     */
     public void addEntry(String message) {
         addEntry(message, Severity.INFO);
     }
@@ -83,8 +109,6 @@ public class Logger {
         public void setCreateDate(Date createDate) {
             this.createDate = createDate;
         }
-        
-        
 
     }
 

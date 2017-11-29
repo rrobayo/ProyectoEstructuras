@@ -176,6 +176,11 @@ public class FXMLDocumentController implements Initializable {
         timer = new Timer();
     }
 
+    /**
+     * Prepara el Controller para su terminación (pausa todos los Timers). Si no
+     * se llama, la aplicación queda corriendo aunque la ventana ya haya sido
+     * cerrada.
+     */
     public void shutdown() {
         if (timer != null) {
             timer.pause();

@@ -23,6 +23,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
 /**
+ * Modela un avión para el problema dado. Administra los datos del avión y su
+ * representación gráfica en la GUI.
  *
  * @author Reyes Ruiz
  */
@@ -36,13 +38,37 @@ public final class Avion {
     private boolean puedeDespegar = true;
     private Pane node;
 
+    /**
+     * El tamaño de los cuadrados que representan Aviones en la GUI
+     */
     public static final int GRAPH_SIZE = 80;
     private static final String[] COLORES = {"greenyellow", "yellow", "orange"};
 
+    /**
+     * Crea un nuevo Avion con los datos proporcionados, y <code>partida</code>
+     * y <code>destino</code> cadenas vacías
+     *
+     * @param codigo El código del avión
+     * @param distancia La distancia del trayecto (necesaria para determinar la
+     * pista en la que el avión será puesto)
+     * @param tiempoInicio El momento en el que el avión ingresa a la pista.
+     * usar en conjunto con un <code>util.Timer</code>
+     */
     public Avion(String codigo, float distancia, int tiempoInicio) {
-        this(codigo, null, null, distancia, tiempoInicio);
+        this(codigo, "", "", distancia, tiempoInicio);
     }
 
+    /**
+     * Crea un nuevo Avion con los datos proporcionados.
+     *
+     * @param codigo El código del avión
+     * @param partida El punto de partida del avión
+     * @param destino El punto de destino del avión
+     * @param distancia La distancia del trayecto (necesaria para determinar la
+     * pista en la que el avión será puesto)
+     * @param tiempoInicio El momento en el que el avión ingresa a la pista.
+     * usar en conjunto con un <code>util.Timer</code>
+     */
     public Avion(String codigo, String partida, String destino, float distancia, int tiempoInicio) {
         this.codigo = codigo;
         this.partida = partida;
@@ -74,6 +100,15 @@ public final class Avion {
         node = sp;
     }
 
+    /**
+     * Método de conveniencia que crea y retorna un Avion a partir de una cadena
+     * de texto
+     *
+     * @param linea La línea de texto a partir de la cual se creará el Avion
+     * @param tiempoInicio El momento en el que el avión ingresa a la pista.
+     * usar en conjunto con un <code>util.Timer</code>
+     * @return El Avion que se acaba de crear
+     */
     public static Avion parseAvion(String linea, int tiempoInicio) {
         String[] data = linea.trim().split(",");
         return new Avion(data[0], data[1], data[2], Integer.parseInt(data[3]), tiempoInicio);
@@ -127,10 +162,23 @@ public final class Avion {
         this.puedeDespegar = puedeDespegar;
     }
 
+    /**
+     * Devuelve el Nodo que representa a este Avion. Usar para agregarlo a algún
+     * Pane y mostrar una representación gráfica del objeto
+     *
+     * @return un Nodo que representa al Avion
+     */
     public Node getNodo() {
         return node;
     }
 
+    /**
+     * Calcular la prioridad que le correspondería a este Avion: 0 si la
+     * distancia es menor a 500, 1 si está entre 500 y 1000, y 2 si es mayor a
+     * 1000
+     *
+     * @return La prioridad en que debería clasificarse este avión.
+     */
     public int getPrioridad() {
         if (distancia < 500) {
             return 0;
@@ -141,6 +189,11 @@ public final class Avion {
         }
     }
 
+    /**
+     * Modificar el color de fondo del Nodo que representa a este Avion.
+     *
+     * @param color El nuevo color de fondo, en formato de JavaFX CSS
+     */
     public void setColor(String color) {
         ((StackPane) node).setStyle("-fx-background-color: " + color);
     }
@@ -174,10 +227,7 @@ public final class Avion {
             return false;
         }
         final Avion other = (Avion) obj;
-        if (!Objects.equals(this.codigo, other.codigo)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.codigo, other.codigo);
     }
 
     private void clicGrafico(MouseEvent e) {
@@ -197,10 +247,23 @@ public final class Avion {
         }
     }
 
+    /**
+     * Devuelve el color de fondo que corresponde a una prioridad específica.
+     *
+     * @param prioridad La prioridad de la que se desea saber el color de fondo.
+     * @return Una caden que representa el color de fondo de la prioridad dada.
+     * Puede usarse en <code>setColor(...)</code>
+     */
     public static String colorForPrioridad(int prioridad) {
         return COLORES[prioridad];
     }
 
+    /**
+     * Implementa la lógica de comparación de aviones por tiempo de espera. Un
+     * Avion es mayor que otro si su tiempo de inicio es mayor (esto es, si
+     * ingresó más recientemente). En consecuencia, los aviones menores son los
+     * más antiguos.
+     */
     public static class AvionComparadorPorTiempoEspera implements Comparator<Avion> {
 
         @Override
