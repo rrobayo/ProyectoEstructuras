@@ -230,7 +230,9 @@ public final class Avion {
         return Objects.equals(this.codigo, other.codigo);
     }
 
-    private void clicGrafico(MouseEvent e) {
+    // Sí, Sonar, ya sé que "Remove this unused method parameter "event"", y no lo voy a hacer
+    @SuppressWarnings("squid:S1172")
+    private void clicGrafico(MouseEvent event) {
         puedeDespegar = !puedeDespegar;
         Node possibleLabel = node.getChildren().get(0);
         if (possibleLabel instanceof Label) {

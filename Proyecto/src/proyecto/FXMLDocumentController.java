@@ -55,8 +55,10 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Pane gfxContainer;
 
+    // Sí, Sonar, ya sé que "Remove this unused method parameter "event"", y no lo voy a hacer
     @FXML
-    private void cargarArchivo(ActionEvent event) {
+    @SuppressWarnings("squid:S1172")
+    private void cargarArchivo(ActionEvent event) { //
         if (timerIn != null) {
             timerIn.pause();
         }
@@ -73,7 +75,9 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
+    // Sí, Sonar, ya sé que "Remove this unused method parameter "event"", y no lo voy a hacer
     @FXML
+    @SuppressWarnings("squid:S1172")
     private void iniciarSimulacion(ActionEvent event) {
         speedIn.setDisable(true);
         speedOut.setDisable(true);
@@ -93,7 +97,9 @@ public class FXMLDocumentController implements Initializable {
         timer.start();
     }
 
+    // Sí, Sonar, ya sé que "Remove this unused method parameter "event"", y no lo voy a hacer
     @FXML
+    @SuppressWarnings("squid:S1172")
     private void pausarSimulacion(ActionEvent event) {
         timer.pause();
         timerIn.pause();
