@@ -74,6 +74,16 @@ public class Logger {
         addEntry(message, Severity.INFO);
     }
 
+    /**
+     * Crear una nueva entrada en el Logger, basada en la excepción dada.
+     * Siempre tendrá una severidad de ERROR
+     *
+     * @param e La excepción que causa el mensaje
+     */
+    public void addEntry(Exception e) {
+        addEntry(e.getMessage(), Severity.ERROR);
+    }
+
     private class Entry {
 
         private Severity severity;

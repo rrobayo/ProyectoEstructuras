@@ -121,7 +121,7 @@ public class FXMLDocumentController implements Initializable {
             btnIniciar.setDisable(false);
             logger.addEntry("Se carga el archivo " + file.getName());
         } catch (IOException e) {
-            logger.addEntry(e.getMessage(), Logger.Severity.ERROR);
+            logger.addEntry(e);
         }
     }
 
