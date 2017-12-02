@@ -138,6 +138,7 @@ public class FXMLDocumentController implements Initializable {
     }
 
     private void ingresarAvion() {
+        logger.addEntry(avionesEnPista.toString());
         if (!avionesPorEntrar.isEmpty()) {
             Avion nuevo = avionesPorEntrar.poll();
             nuevo.setTiempoInicio(timer.getSegundos());
@@ -158,6 +159,7 @@ public class FXMLDocumentController implements Initializable {
     }
 
     private void sacarAvion() {
+        logger.addEntry(avionesEnPista.toString());
         if (!avionesEnPista.isEmpty()) {
             PriorityQueue<Avion> primeraColaNoVacia = avionesEnPista.primeraColaNoVacia();
             for (int i = 0; i < primeraColaNoVacia.size(); i++) {
@@ -167,7 +169,9 @@ public class FXMLDocumentController implements Initializable {
                             sale.getFirst().getCodigo(), sale.getSecond(), avionesEnPista.size()));
                     break;
                 } else {
-                    logger.addEntry(String.format("%s no puede despegar de pista %d", sale.getFirst().getCodigo(), sale.getSecond()));
+                    logger.addEntry(
+                            String.format("%s no puede despegar de pista %d", sale.getFirst().getCodigo(), sale.getSecond()),
+                            Logger.Severity.WARNING);
                     sale.getFirst().setTiempoInicio(timer.getSegundos());
                     avionesEnPista.offer(sale.getFirst(), sale.getSecond());
                 }
@@ -183,9 +187,9 @@ public class FXMLDocumentController implements Initializable {
     }
 
     /**
-     * Prepara el Controller para su terminación (pausa todos los Timers). Si no
-     * se llama, la aplicación queda corriendo aunque la ventana ya haya sido
-     * cerrada.
+     * Prepara el Controller para su terminación (pausa todos los Timers y
+     * guarda el log). Si no se llama, la aplicación queda corriendo aunque la
+     * ventana ya haya sido cerrada.
      */
     public void shutdown() {
         if (timer != null) {
@@ -197,6 +201,7 @@ public class FXMLDocumentController implements Initializable {
         if (timerOut != null) {
             timerOut.stop();
         }
+        logger.save("log.txt");
     }
 
 }

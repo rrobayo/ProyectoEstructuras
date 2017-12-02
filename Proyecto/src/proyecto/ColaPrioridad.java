@@ -180,7 +180,7 @@ public class ColaPrioridad<T> {
         buffer = new StringBuilder();
         int i = 0;
         for (Queue cola : colas) {
-            buffer.append(i).append("-").append(cola.toString()).append("\n");
+            buffer.append(i).append("-").append(cola.toString()).append("\t");
             i++;
         }
         return buffer.toString();

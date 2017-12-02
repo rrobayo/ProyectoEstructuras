@@ -5,6 +5,10 @@
  */
 package util;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -82,6 +86,52 @@ public class Logger {
      */
     public void addEntry(Exception e) {
         addEntry(e.getMessage(), Severity.ERROR);
+    }
+
+    /**
+     * Guardar el estado actual del Logger en un archivo (sobreescribe el
+     * archivo existente)
+     *
+     * @param file El objeto File que apunta al archivo a usar
+     * @return <code>true</code> si el proceso ocurrió sin errores,
+     * <code>false</code> si ocurrió algún error
+     */
+    public boolean save(File file) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+            for (Entry e : entries) {
+                switch (e.getSeverity()) {
+                    case INFO:
+                        bw.write("INFO");
+                        break;
+                    case WARNING:
+                        bw.write("WARN");
+                        break;
+                    case ERROR:
+                        bw.write("ERR");
+                        break;
+                }
+                bw.write("-");
+                bw.write(e.getCreateDate().toString());
+                bw.write("-");
+                bw.write(e.getMessage().trim());
+                bw.newLine();
+            }
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Guardar el estado actual del Logger en un archivo (sobreescribe el
+     * archivo existente)
+     *
+     * @param file La ubicación del archivo a usar
+     * @return <code>true</code> si el proceso ocurrió sin errores,
+     * <code>false</code> si ocurrió algún error
+     */
+    public boolean save(String file) {
+        return save(new File(file));
     }
 
     private class Entry {
