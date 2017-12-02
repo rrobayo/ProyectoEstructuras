@@ -21,6 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -52,6 +53,8 @@ public class FXMLDocumentController implements Initializable {
     private Button btnPausar;
     @FXML
     private VBox loggerContainer;
+    @FXML
+    private ScrollPane loggerContainerParent;
     @FXML
     private Pane gfxContainer;
 
@@ -184,6 +187,10 @@ public class FXMLDocumentController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         logger = new Logger(loggerContainer);
         timer = new Timer();
+
+        loggerContainer.heightProperty().addListener((observable, oldVal, newVal) -> {
+            loggerContainerParent.setVvalue(newVal.doubleValue());
+        });
     }
 
     /**
