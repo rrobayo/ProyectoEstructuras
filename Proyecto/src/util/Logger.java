@@ -109,6 +109,8 @@ public class Logger {
                     case ERROR:
                         bw.write("ERR");
                         break;
+                    default:
+                        break;
                 }
                 bw.write("-");
                 bw.write(e.getCreateDate().toString());
@@ -118,6 +120,7 @@ public class Logger {
             }
             return true;
         } catch (IOException e) {
+            addEntry(e);
             return false;
         }
     }

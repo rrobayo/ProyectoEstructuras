@@ -268,6 +268,16 @@ public final class Avion {
      */
     public static class AvionComparadorPorTiempoEspera implements Comparator<Avion> {
 
+        /**
+         * Devuelve un número positivo si el <code>tiempoInicio</code> del
+         * primer Avion es mayor que el del segundo, cero si son iguales y un
+         * número negativo si el del segundo Avion es mayor
+         *
+         * @param o1 El primer Avion a comparar
+         * @param o2 El segundo Avion a comparar
+         * @return Un número indicando cuál de los aviones, si alguno, es mayor
+         * que el otro
+         */
         @Override
         public int compare(Avion o1, Avion o2) {
             return o1.getTiempoInicio() - o2.getTiempoInicio();

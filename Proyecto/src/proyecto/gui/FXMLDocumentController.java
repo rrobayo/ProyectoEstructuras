@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package proyecto;
+package proyecto.gui;
 
 import util.Tuple;
 import java.io.BufferedReader;
@@ -27,6 +27,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+import proyecto.Avion;
+import proyecto.ColaPrioridad;
 import util.Logger;
 import util.Timer;
 
@@ -188,9 +190,8 @@ public class FXMLDocumentController implements Initializable {
         logger = new Logger(loggerContainer);
         timer = new Timer();
 
-        loggerContainer.heightProperty().addListener((observable, oldVal, newVal) -> {
-            loggerContainerParent.setVvalue(newVal.doubleValue());
-        });
+        loggerContainer.heightProperty().addListener((observable, oldVal, newVal)
+                -> loggerContainerParent.setVvalue(newVal.doubleValue()));
     }
 
     /**

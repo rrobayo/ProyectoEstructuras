@@ -37,7 +37,7 @@
             </children>
         </GridPane>
         <Pane fx:id="gfxContainer" layoutX="14.0" layoutY="144.0" prefHeight="186.0" prefWidth="616.0" style="-fx-background-color: lightgrey;" />
-        <ScrollPane layoutX="14.0" layoutY="341.0" prefHeight="171.0" prefWidth="616.0" vvalue="1.0" AnchorPane.bottomAnchor="15.0">
+        <ScrollPane fx:id="loggerContainerParent" layoutX="14.0" layoutY="341.0" prefHeight="171.0" prefWidth="616.0" vvalue="1.0" AnchorPane.bottomAnchor="15.0">
             <content>
                 <VBox fx:id="loggerContainer" />
             </content>
